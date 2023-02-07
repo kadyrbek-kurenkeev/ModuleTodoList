@@ -1,115 +1,120 @@
-// import React, { useContext, useState } from "react";
-// import Box from "@mui/material/Box";
-// import Card from "@mui/material/Card";
-// import CardContent from "@mui/material/CardContent";
-// import Stack from "@mui/material/Stack";
-// import Button from "@mui/material/Button";
-// import { Typography } from "@mui/material";
-// import TextField from "@mui/material/TextField";
-// import { ListContext } from "../Context/ListContextProvider";
+import React, { useContext, useState } from "react";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import { Typography } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import { listContext } from "../Context/ListContextProvider";
 
-// const AddTodo: React.FunctionComponent = () => {
-//   const { addProducts } = useContext(ListContext);
+const AddTodo: React.FC = () => {
+  const { addProducts } = useContext(listContext);
 
-//   const [product, setProduct] = useState({
-//     title: "",
-//     descriptions: "",
-//   });
+  const [product, setProduct] = useState({
+    title: "",
+    description: "",
+  });
 
-//   const handleInp = (event) => {
-//     if (e.target.name === "image") {
-//       setProduct({
-//         ...product,
-//         [e.target.name]: e.target.files[0],
-//       });
-//     } else {
-//       setProduct({
-//         ...product,
-//         [e.target.name]: e.target.value,
-//       });
-//     }
-//   };
+  const handleInp: React.FormEventHandler = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setProduct({
+      ...product,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-//   function handleSave() {
-//     let newProduct = new FormData();
-//     newProduct.append("title", product.title);
-//     newProduct.append("descriptions", product.descriptions);
+  function handleSave() {
+    if (!product.title.trim() || !product.description.trim()) {
+      alert("Заполните поля!");
+      return;
+    }
 
-//     addProducts(newProduct);
-//   }
+    let newProduct = {
+      title: product.title,
+      description: product.description,
+    };
 
-//   return (
-//     <Box
-//       sx={{
-//         display: "flex",
-//         justifyContent: "center",
-//         flexWrap: "wrap",
-//         minHeight: "400px",
-//         "& > :not(style)": {
-//           m: 1,
-//           width: 345,
-//         },
-//       }}
-//     >
-//       <Typography
-//         sx={{
-//           display: "flex",
+    addProducts(newProduct);
+    window.location.reload();
+  }
 
-//           justifyContent: "center",
-//           paddingTop: "10px",
-//           paddingBottom: "10px",
-//           fontSize: "20px",
-//           fontWeight: "bolder",
-//         }}
-//       >
-//         Add Todo
-//       </Typography>
-//       <Card
-//         sx={{
-//           minWidth: 175,
-//           borderRadius: "20px",
-//         }}
-//       >
-//         <CardContent>
-//           <Box
-//             component="form"
-//             sx={{
-//               "& > :not(style)": { m: 1, width: "28ch" },
-//             }}
-//             noValidate
-//             autoComplete="off"
-//           >
-//             <TextField id="outlined-basic" label="Title" variant="outlined" />
-//             <TextField
-//               id="outlined-basic"
-//               label="Description"
-//               variant="outlined"
-//             />
-//           </Box>
-//           <Stack spacing={2} direction="row">
-//             <Button
-//               variant="contained"
-//               size="large"
-//               sx={{
-//                 width: "80%",
-//                 marginLeft: "8px",
-//               }}
-//             >
-//               Add
-//             </Button>
-//           </Stack>
-//         </CardContent>
-//       </Card>
-//     </Box>
-//   );
-// };
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        flexWrap: "wrap",
+        minHeight: "400px",
+        "& > :not(style)": {
+          m: 1,
+          width: 345,
+        },
+      }}
+    >
+      <Typography
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          paddingTop: "10px",
+          paddingBottom: "10px",
+          fontSize: "20px",
+          fontWeight: "bolder",
+        }}
+      >
+        Add Todo
+      </Typography>
+      <Card
+        sx={{
+          minWidth: 175,
+          borderRadius: "20px",
+        }}
+      >
+        <CardContent>
+          <Box
+            component="form"
+            sx={{
+              "& > :not(style)": { m: 1, width: "28ch" },
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <TextField
+              id="outlined-basic"
+              label="Title"
+              variant="outlined"
+              name="title"
+              value={product.title}
+              onChange={handleInp}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Description"
+              variant="outlined"
+              name="description"
+              value={product.description}
+              onChange={handleInp}
+            />
+          </Box>
 
-// export default AddTodo;
-
-import React from "react";
-
-const AddTodo = () => {
-  return <div></div>;
+          <Stack spacing={2} direction="row">
+            <Button
+              variant="contained"
+              size="large"
+              sx={{
+                width: "80%",
+                marginLeft: "8px",
+              }}
+              onClick={handleSave}
+            >
+              Add
+            </Button>
+          </Stack>
+        </CardContent>
+      </Card>
+    </Box>
+  );
 };
 
 export default AddTodo;

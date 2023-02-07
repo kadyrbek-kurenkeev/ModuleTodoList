@@ -5,11 +5,9 @@ import Container from "@mui/material/Container";
 import { Typography } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import AddTodo from "../AddTodo/AddTodo.jsx";
+import AddTodo from "../AddTodo/AddTodo";
 import TodoList from "../TodoList/TodoList.jsx";
-
-// import CardTodo from "../CardTodo/CardTodo";
-// import CompleteList from "../CardTodo/CompleteList.jsx";
+import CompleteList from "../CardTodo/CompleteList.jsx";
 
 const MainPage: React.FunctionComponent = () => {
   return (
@@ -70,7 +68,9 @@ const MainPage: React.FunctionComponent = () => {
                 backgroundColor: "#0096FF",
               }}
             >
-              <CardContent>{/* <CompleteList /> */}</CardContent>
+              <CardContent>
+                <CompleteList />
+              </CardContent>
             </Card>
           </Box>
         </Box>

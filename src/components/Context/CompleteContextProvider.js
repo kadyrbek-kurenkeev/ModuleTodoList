@@ -1,93 +1,85 @@
-// import React, { createContext, useReducer } from "react";
+import axios from "axios";
+import React, { createContext, useReducer } from "react";
+import { API_COMPLETE } from "../helper/helper";
 
-// export const completeContext = createContext();
+export const completeContext = createContext();
 
-// const INIT_STATE = {
-//   cart: JSON.parse(localStorage.getItem("cart")),
-// };
+const INIT_STATE = {
+  products: [],
+  productDetails: {},
+};
 
-// function reducer(state = INIT_STATE, action) {
-//   switch (action.type) {
-//     case "GET_CART":
-//       return { ...state, cart: action.payload };
-//     default:
-//       console.log("");
-//   }
-// }
+function reducer(state = INIT_STATE, action) {
+  switch (action.type) {
+    case "GET_PRODUCTS":
+      return {
+        ...state,
+        products: action.payload,
+      };
+    case "GET_PRODUCT_DETAIL":
+      return { ...state, productDetails: action.payload };
+    default:
+      return state;
+  }
+}
 
-// const CopmpleteContexProvider = ({ children }) => {
-//   const [state, dispatch] = useReducer(reducer, INIT_STATE);
+const CompleteContextProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, INIT_STATE);
 
-//   const getCart = () => {
-//     let cart = JSON.parse(localStorage.getItem("cart"));
+  async function getProducts() {
+    try {
+      const res = await axios(`${API_COMPLETE}/${window.location.search}`);
 
-//     if (!cart) {
-//       localStorage.setItem("cart", JSON.stringify({ products: [] }));
-//       cart = {
-//         products: [],
-//       };
-//     }
-//     dispatch({
-//       type: "GET_CART",
-//       payload: cart,
-//     });
-//   };
+      dispatch({
+        type: "GET_PRODUCTS",
+        payload: res.data,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
-//   const addProductToCart = (product) => {
-//     let cart = JSON.parse(localStorage.getItem("cart"));
+  async function addProductToCart(newProduct) {
+    await axios.post(API_COMPLETE, newProduct);
+  }
 
-//     if (!cart) {
-//       cart = {
-//         products: [],
-//       };
-//     }
+  async function deleteProduct(id) {
+    try {
+      const res = await axios.delete(`${API_COMPLETE}/${id}/`);
+      getProducts();
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
-//     let newProduct = {
-//       item: product,
-//     };
+  const getProductDetails = async (id) => {
+    try {
+      const res = await axios.get(`${API_COMPLETE}/${id}`);
+      dispatch({
+        type: "GET_PRODUCT_DETAIL",
+        payload: res.data,
+      });
+      getProducts();
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-//     let productToFind = cart.products.filter((elem) => elem.item === product);
+  let values = {
+    products: state.products,
+    productDetails: state.productDetails,
+    addProductToCart,
+    getProducts,
+    deleteProduct,
+    getProductDetails,
+  };
+  return (
+    <div>
+      <completeContext.Provider value={values}>
+        {children}
+      </completeContext.Provider>
+    </div>
+  );
+};
 
-//     if (productToFind.length === 0) {
-//       cart.products.push(newProduct);
-//     } else {
-//       cart.products = cart.products.filter(
-//         (elem) => elem.item.id !== product.id
-//       );
-//     }
-//     localStorage.setItem("cart", JSON.stringify(cart));
-
-//     dispatch({
-//       type: "GET_CART",
-//       payload: cart,
-//     });
-//   };
-
-//   function deleteCartProduct(id) {
-//     let cart = JSON.parse(localStorage.getItem("cart"));
-
-//     cart.products = cart.products.filter((elem) => elem.item.id !== id);
-
-//     localStorage.setItem("cart", JSON.stringify(cart));
-//     getCart();
-//     dispatch({
-//       type: "GET_CART",
-//       payload: cart,
-//     });
-//   }
-//   let values = {
-//     cart: state.cart,
-//     addProductToCart,
-//     getCart,
-//     deleteCartProduct,
-//   };
-//   return (
-//     <div>
-//       <completeContext.Provider value={values}>
-//         {children}
-//       </completeContext.Provider>
-//     </div>
-//   );
-// };
-
-// export default CopmpleteContexProvider;
+export default CompleteContextProvider;

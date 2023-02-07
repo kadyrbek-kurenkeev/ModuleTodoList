@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
-import TodoItem from "./TodoItem.jsx";
+import TodoItem from "./TodoItem";
 import { listContext } from "../Context/ListContextProvider.js";
 import { useSearchParams } from "react-router-dom";
 

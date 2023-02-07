@@ -6,13 +6,36 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { Typography } from "@mui/material";
 import { listContext } from "../Context/ListContextProvider";
+import { completeContext } from "../Context/CompleteContextProvider";
 import { useNavigate } from "react-router-dom";
-
-// import { completeContext } from "../Context/CompleteContextProvider";
 
 const TodoItem = ({ item }) => {
   const { deleteProduct } = useContext(listContext);
-  // const { addProductToCart } = useContext(completeContext);
+
+  const { addProductToCart } = useContext(completeContext);
+
+  const [product, setProduct] = useState({
+    title: "",
+    description: "",
+  });
+
+  const handleInp = (e) => {
+    setProduct({
+      ...product,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  function handleSave() {
+    let newProduct = {
+      title: item.title,
+      description: item.description,
+    };
+
+    addProductToCart(newProduct);
+    deleteProduct(item.id);
+    window.location.reload();
+  }
 
   const navigate = useNavigate();
 
@@ -44,10 +67,22 @@ const TodoItem = ({ item }) => {
             noValidate
             autoComplete="off"
           >
-            <Typography gutterBottom variant="h5" component="div">
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              value={item.title}
+              onChange={handleInp}
+            >
               {item.title}
             </Typography>
-            <Typography gutterBottom variant="h7" component="div">
+            <Typography
+              gutterBottom
+              variant="h7"
+              component="div"
+              value={item.description}
+              onChange={handleInp}
+            >
               {item.description}
             </Typography>
           </Box>
@@ -65,7 +100,7 @@ const TodoItem = ({ item }) => {
               sx={{
                 width: "50%",
               }}
-              // onClick={() => addProductToCart(item.id)}
+              onClick={() => handleSave(item.id)}
             >
               Complete
             </Button>
@@ -78,17 +113,6 @@ const TodoItem = ({ item }) => {
               onClick={() => navigate(`/edit/${item.id}`)}
             >
               Edit
-            </Button>
-
-            <Button
-              variant="contained"
-              size="large"
-              sx={{
-                width: "50%",
-              }}
-              onClick={() => deleteProduct(item.id)}
-            >
-              Delete
             </Button>
           </Stack>
         </CardContent>
